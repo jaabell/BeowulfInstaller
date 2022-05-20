@@ -1,0 +1,17 @@
+    - name: Configure Client node
+      shell: /opt/beegfs/sbin/beegfs-setup-client -f -m "{{ item }}"
+      with_items: "{{ lookup('file', 'master_ip.txt').splitlines() }}"
+
+    - name: Change client behaviour 
+      copy:
+        src: beegfs-client.service
+        dest: /lib/systemd/system
+
+    - name: Change mount directory
+      copy: 
+        src: beegfs-mounts.conf
+        dest: /etc/beegfs
+
+
+    - name: service reload
+      shell: systemctl daemon-reload

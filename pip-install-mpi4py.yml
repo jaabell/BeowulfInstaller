@@ -1,0 +1,9 @@
+---
+  - name: "Installing mpi4py"
+    hosts: compute
+
+    tasks:
+
+      - name: Install mpi4py
+        pip:
+          name: mpi4py

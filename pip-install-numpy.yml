@@ -1,0 +1,9 @@
+---
+  - name: "Installing numpy with pip"
+    hosts: compute
+
+    tasks:
+
+      - name: Install numpy python package
+        pip:
+          name: numpy

@@ -1,8 +1,11 @@
+- name: Setup master node libraries
+  import_playbook: apt-install-master.yml
+
 - name: Setup master node
   import_playbook: master-install.yml
 
-- name: Setup storage nodes
-  import_playbook: store-install.yml
+- name: Setup compute nodes libraries
+  import_playbook: apt-install-compute.yml
 
 - name: Setup compute nodes
   import_playbook: compute-install.yml

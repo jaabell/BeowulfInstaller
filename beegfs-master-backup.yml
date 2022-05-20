@@ -1,0 +1,28 @@
+- name: Configure Beegfs Management node
+      shell: "/opt/beegfs/sbin/beegfs-setup-mgmtd -p /data/beegfs_mgmtd -f"
+
+    - name: Get master node IP
+      script: master_host.py
+      args:
+        executable: python3
+
+    - name: Configure Beegfs Metadata node
+      shell: /opt/beegfs/sbin/beegfs-setup-meta -p /data/beegfs_meta -f -m "{{ item }}"
+      with_items: "{{ lookup('file', 'master_ip.txt').splitlines() }}"
+
+    - name: Configure Beegfs Client node
+      shell: /opt/beegfs/sbin/beegfs-setup-client -f -m "{{ item }}"
+      with_items: "{{ lookup('file', 'master_ip.txt').splitlines() }}"
+
+    - name: Change Beegfs Client behaviour
+      copy:
+        src: beegfs-client.service
+        dest: /lib/systemd/system
+
+    - name: Change Beegfs mount directory
+      copy:
+        src: beegfs-mounts.conf
+        dest: /etc/beegfs
+
+    - name: service reload
+      shell: systemctl daemon-reload

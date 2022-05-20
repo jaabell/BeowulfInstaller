@@ -1,11 +1,10 @@
 ---
-  - name: "Installing Control Node Libraries"
-    hosts: localhost
-    become: yes
-    
-    connection: local
+  - name: "Installing Compute Nodes apt packages"
+    hosts: compute
+
     tasks:
-    - name: Add Beegfs packages
+
+    - name: Download Beegfs packages
       get_url:
         url: https://www.beegfs.io/release/beegfs_7.2/dists/beegfs-deb10.list
         dest: /etc/apt/sources.list.d
@@ -21,13 +20,15 @@
 
     - name: Downloading and installing packages
       apt:
-        name: ['munge', 'libmunge-dev', 'gcc', 'gpp', 'g++', 'gfortran', 'make', 'libevent-dev', 'libhwloc-dev', mariadb-server, libmariadb-dev, python3-pip, ntp]  
+        name: ['munge', 'libmunge-dev', 'gcc', 'gpp', 'g++', 'gfortran', 'make', 'libevent-dev', 'libhwloc-dev', python3-pip, ntp]
         state: present
-        
-    - name: Installing Beegfs packages
+
+
+    - name: Install Beegfs Client packages
       apt:
-        name: ['beegfs-mgmtd', 'beegfs-meta', 'beegfs-client', 'beegfs-helperd', 'beegfs-utils']  
+        name: ['beegfs-client', 'beegfs-helperd', 'beegfs-utils']
         state: present
+
 
 
     

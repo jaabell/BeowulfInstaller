@@ -1,39 +1,10 @@
 ---
-  - name: "Configure Control Node Libraries"
+  - name: "Configure Master Node Libraries"
     hosts: localhost
     become: yes
-    
+
     connection: local
     tasks:
-
-    - name: Configure Beegfs Management node
-      shell: "/opt/beegfs/sbin/beegfs-setup-mgmtd -p /data/beegfs_mgmtd -f"
-
-    - name: Get master node IP      
-      script: master_host.py
-      args:
-        executable: python3
-
-    - name: Configure Beegfs Metadata node
-      shell: /opt/beegfs/sbin/beegfs-setup-meta -p /data/beegfs_meta -f -m "{{ item }}"
-      with_items: "{{ lookup('file', 'master_ip.txt').splitlines() }}"
-
-    - name: Configure Beegfs Client node
-      shell: /opt/beegfs/sbin/beegfs-setup-client -f -m "{{ item }}"
-      with_items: "{{ lookup('file', 'master_ip.txt').splitlines() }}"
-
-    - name: Change Beegfs Client behaviour 
-      copy:
-        src: beegfs-client.service
-        dest: /lib/systemd/system
-
-    - name: Change Beegfs mount directory
-      copy: 
-        src: beegfs-mounts.conf
-        dest: /etc/beegfs
-
-    - name: service reload
-      shell: systemctl daemon-reload
 
     - name: Create directory for source codes
       file:
@@ -58,7 +29,7 @@
         - ./configure --prefix=/opt/pmix
         - make install
 
-    - name: Add the slurm user  
+    - name: Add the slurm user
       user:
         name: slurm
 
@@ -84,11 +55,11 @@
         - make install
         - ldconfig -n /opt/slurm/lib
 
-    - name: Copy slurm service 
+    - name: Copy slurm service
       copy:
         src: /usr/local/src/cluster/slurm-20.02.6/etc/slurmctld.service
         dest: /etc/systemd/system
-  
+
   - name: "Retrieve data for slurm.conf"
     hosts: guineapig
     tasks:
@@ -165,7 +136,7 @@
         - make all
         - make install
 
-    - name: Copy munge.key to 
+    - name: Copy munge.key to
       shell: "cp /etc/munge/munge.key /usr/local/src/cluster"
 
     - name: Change munge.key permissions
@@ -179,8 +150,8 @@
     - name: Enable munge
       shell: systemctl enable munge
 
-    - name: Start Beegfs Services
-      shell: systemctl start beegfs-mgmtd beegfs-meta beegfs-helperd beegfs-client
+#    - name: Start Beegfs Services
+#      shell: systemctl start beegfs-mgmtd beegfs-meta beegfs-helperd beegfs-client
 
 
     - name: Add libraries to path
@@ -194,4 +165,4 @@
 
 #lscpu | grep -v "NUMA" | grep 'CPU(s):\|Thread(s) per core:\|Core(s) per socket:\|Socket(s):' > test.txt
 #free | grep 'Mem:' >> test.txt
-    
+

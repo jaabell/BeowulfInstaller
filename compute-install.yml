@@ -2,24 +2,6 @@
   - name: "Configure Compute Nodes"
     hosts: compute
     tasks:
-   
-    - name: Configure Client node
-      shell: /opt/beegfs/sbin/beegfs-setup-client -f -m "{{ item }}"
-      with_items: "{{ lookup('file', 'master_ip.txt').splitlines() }}"
-
-    - name: Change client behaviour 
-      copy:
-        src: beegfs-client.service
-        dest: /lib/systemd/system
-
-    - name: Change mount directory
-      copy: 
-        src: beegfs-mounts.conf
-        dest: /etc/beegfs
-
-
-    - name: service reload
-      shell: systemctl daemon-reload
 
     - name: Create directory for source codes
       file:
@@ -139,11 +121,11 @@
       shell: systemctl enable munge
 
 
-    - name: Start slurmd
-      shell: service slurmd start
+#    - name: Start slurmd
+#      shell: service slurmd start
 
-    - name: Enable slurmd
-      shell: systemctl enable slurmd
+#    - name: Enable slurmd
+#      shell: systemctl enable slurmd
 
         
     - name: Add libraries to path
@@ -163,8 +145,8 @@
     - name: Enabling ntp
       shell: systemctl enable ntp
 
-    - name: service start
-      shell: systemctl start beegfs-client beegfs-helperd
+#    - name: service start
+#      shell: systemctl start beegfs-client beegfs-helperd
 
 
 
